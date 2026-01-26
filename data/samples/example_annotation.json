@@ -1,0 +1,187 @@
+{
+  "metadata": {
+    "job_name": "Sample Kitchen Project",
+    "client_name": "Demo Client",
+    "source_file": "sample_floor_plan.pdf",
+    "source_type": "floor_plan",
+    "confidence_score": 0.95,
+    "notes": "Example annotation for training data"
+  },
+  "room": {
+    "name": "Kitchen",
+    "units": "in",
+    "ceiling_height": 96,
+    "walls": [
+      {"id": "W1", "start": [0, 0], "end": [156, 0], "thickness": 4.5},
+      {"id": "W2", "start": [156, 0], "end": [156, 144], "thickness": 4.5},
+      {"id": "W3", "start": [156, 144], "end": [60, 144], "thickness": 4.5},
+      {"id": "W4", "start": [60, 144], "end": [60, 84], "thickness": 4.5},
+      {"id": "W5", "start": [60, 84], "end": [0, 84], "thickness": 4.5},
+      {"id": "W6", "start": [0, 84], "end": [0, 0], "thickness": 4.5}
+    ],
+    "openings": [
+      {
+        "id": "O1",
+        "type": "window",
+        "wall_id": "W1",
+        "offset": 78,
+        "width": 36,
+        "height": 48,
+        "sill_height": 42
+      },
+      {
+        "id": "O2",
+        "type": "door",
+        "wall_id": "W6",
+        "offset": 42,
+        "width": 36,
+        "height": 80,
+        "sill_height": 0
+      }
+    ]
+  },
+  "cabinets": [
+    {
+      "id": "B1",
+      "cabinet_type": "base",
+      "position": {"wall_id": "W1", "offset": 0, "elevation": 0},
+      "dimensions": {"width": 24, "height": 34.5, "depth": 24},
+      "configuration": {"door_count": 1, "drawer_count": 1, "hinge_side": "left"},
+      "style": {"door_style": "SHAKER", "overlay_type": "full"}
+    },
+    {
+      "id": "B2",
+      "cabinet_type": "base_sink",
+      "position": {"wall_id": "W1", "offset": 24, "elevation": 0},
+      "dimensions": {"width": 36, "height": 34.5, "depth": 24},
+      "configuration": {"door_count": 2, "drawer_count": 0, "hinge_side": "both"}
+    },
+    {
+      "id": "B3",
+      "cabinet_type": "base",
+      "position": {"wall_id": "W1", "offset": 60, "elevation": 0},
+      "dimensions": {"width": 24, "height": 34.5, "depth": 24},
+      "configuration": {"door_count": 1, "drawer_count": 1, "hinge_side": "right"}
+    },
+    {
+      "id": "B4",
+      "cabinet_type": "drawer_base",
+      "position": {"wall_id": "W2", "offset": 0, "elevation": 0},
+      "dimensions": {"width": 18, "height": 34.5, "depth": 24},
+      "configuration": {"drawer_count": 4}
+    },
+    {
+      "id": "B5",
+      "cabinet_type": "base",
+      "position": {"wall_id": "W2", "offset": 18, "elevation": 0},
+      "dimensions": {"width": 30, "height": 34.5, "depth": 24},
+      "notes": "Range location"
+    },
+    {
+      "id": "B6",
+      "cabinet_type": "base",
+      "position": {"wall_id": "W2", "offset": 48, "elevation": 0},
+      "dimensions": {"width": 24, "height": 34.5, "depth": 24}
+    },
+    {
+      "id": "U1",
+      "cabinet_type": "wall",
+      "position": {"wall_id": "W1", "offset": 0, "elevation": 54},
+      "dimensions": {"width": 24, "height": 30, "depth": 12},
+      "configuration": {"door_count": 1, "hinge_side": "left"}
+    },
+    {
+      "id": "U2",
+      "cabinet_type": "wall",
+      "position": {"wall_id": "W1", "offset": 60, "elevation": 54},
+      "dimensions": {"width": 24, "height": 30, "depth": 12},
+      "configuration": {"door_count": 1, "hinge_side": "right"}
+    },
+    {
+      "id": "U3",
+      "cabinet_type": "wall",
+      "position": {"wall_id": "W2", "offset": 18, "elevation": 60},
+      "dimensions": {"width": 30, "height": 18, "depth": 12},
+      "notes": "Above range hood area"
+    },
+    {
+      "id": "U4",
+      "cabinet_type": "wall",
+      "position": {"wall_id": "W2", "offset": 48, "elevation": 54},
+      "dimensions": {"width": 24, "height": 30, "depth": 12}
+    },
+    {
+      "id": "T1",
+      "cabinet_type": "tall_pantry",
+      "position": {"wall_id": "W3", "offset": 0, "elevation": 0},
+      "dimensions": {"width": 24, "height": 96, "depth": 24},
+      "configuration": {"door_count": 2, "shelf_count": 5}
+    }
+  ],
+  "appliances": [
+    {
+      "id": "A1",
+      "appliance_type": "sink",
+      "position": {"wall_id": "W1", "offset": 24},
+      "dimensions": {"width": 33, "depth": 22}
+    },
+    {
+      "id": "A2",
+      "appliance_type": "range",
+      "position": {"wall_id": "W2", "offset": 18},
+      "dimensions": {"width": 30, "height": 36, "depth": 28},
+      "brand": "GE",
+      "model": "Profile Series"
+    },
+    {
+      "id": "A3",
+      "appliance_type": "refrigerator",
+      "position": {"wall_id": "W3", "offset": 24},
+      "dimensions": {"width": 36, "height": 70, "depth": 30}
+    },
+    {
+      "id": "A4",
+      "appliance_type": "dishwasher",
+      "position": {"wall_id": "W2", "offset": 0},
+      "dimensions": {"width": 24, "height": 34, "depth": 24}
+    }
+  ],
+  "finishes": {
+    "packages": [
+      {
+        "id": "PKG_DEFAULT",
+        "name": "Modern White",
+        "description": "Clean white shaker with brass accents",
+        "door_material": "MDF",
+        "door_color": "Pure White",
+        "box_material": "White Melamine",
+        "box_color": "White",
+        "hardware_style": "Bar Pull",
+        "hardware_finish": "Brushed Brass",
+        "countertop_material": "Quartz",
+        "countertop_color": "Calacatta",
+        "price_tier": "premium"
+      }
+    ],
+    "default_package": "PKG_DEFAULT"
+  },
+  "trim": {
+    "crown_molding": {
+      "style": "Standard",
+      "height": 3,
+      "locations": ["W1", "W2"]
+    },
+    "toe_kick": {
+      "height": 4,
+      "material": "Matching"
+    }
+  },
+  "shop_rules": {
+    "min_filler_width": 1.5,
+    "max_filler_width": 6,
+    "standard_base_height": 34.5,
+    "standard_wall_height": 30,
+    "standard_depth_base": 24,
+    "standard_depth_wall": 12
+  }
+}

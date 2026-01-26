@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mozaik-automation/schemas/cabinet-spec.json",
+  "title": "Cabinet Design Specification",
+  "description": "Complete specification for a cabinet design job, extracted from drawings",
+  "type": "object",
+  "required": ["metadata", "room", "cabinets"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "description": "Job metadata and source information",
+      "required": ["job_name", "created_at"],
+      "properties": {
+        "job_name": { "type": "string" },
+        "client_name": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "source_file": { "type": "string" },
+        "source_type": {
+          "type": "string",
+          "enum": ["floor_plan", "elevation", "sketch", "photo", "cad"]
+        },
+        "confidence_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "notes": { "type": "string" }
+      }
+    },
+    "room": {
+      "type": "object",
+      "description": "Room geometry and layout",
+      "required": ["units", "walls", "ceiling_height"],
+      "properties": {
+        "name": { "type": "string", "default": "Kitchen" },
+        "units": {
+          "type": "string",
+          "enum": ["in", "mm", "cm"],
+          "default": "in"
+        },
+        "ceiling_height": { "type": "number" },
+        "walls": {
+          "type": "array",
+          "description": "Wall segments defining the room perimeter",
+          "items": {
+            "type": "object",
+            "required": ["id", "start", "end"],
+            "properties": {
+              "id": { "type": "string" },
+              "start": {
+                "type": "array",
+                "items": { "type": "number" },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "end": {
+                "type": "array",
+                "items": { "type": "number" },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "thickness": { "type": "number", "default": 4.5 }
+            }
+          }
+        },
+        "openings": {
+          "type": "array",
+          "description": "Doors, windows, and other openings",
+          "items": {
+            "type": "object",
+            "required": ["type", "wall_id", "offset", "width", "height"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": {
+                "type": "string",
+                "enum": ["door", "window", "pass_through", "archway"]
+              },
+              "wall_id": { "type": "string" },
+              "offset": {
+                "type": "number",
+                "description": "Distance from wall start to opening center"
+              },
+              "width": { "type": "number" },
+              "height": { "type": "number" },
+              "sill_height": {
+                "type": "number",
+                "description": "Height from floor to bottom of opening"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cabinets": {
+      "type": "array",
+      "description": "All cabinet units in the design",
+      "items": {
+        "type": "object",
+        "required": ["id", "cabinet_type", "position", "dimensions"],
+        "properties": {
+          "id": { "type": "string" },
+          "cabinet_type": {
+            "type": "string",
+            "enum": [
+              "base", "base_sink", "base_corner", "base_blind_corner",
+              "wall", "wall_corner", "wall_blind_corner",
+              "tall", "tall_pantry", "tall_oven",
+              "island", "peninsula",
+              "drawer_base", "appliance_garage",
+              "open_shelf", "wine_rack"
+            ]
+          },
+          "position": {
+            "type": "object",
+            "required": ["wall_id", "offset"],
+            "properties": {
+              "wall_id": {
+                "type": "string",
+                "description": "Reference to wall ID, or 'ISLAND' for freestanding"
+              },
+              "offset": {
+                "type": "number",
+                "description": "Distance from wall start to cabinet left edge"
+              },
+              "elevation": {
+                "type": "number",
+                "description": "Height from floor to cabinet bottom",
+                "default": 0
+              }
+            }
+          },
+          "dimensions": {
+            "type": "object",
+            "required": ["width"],
+            "properties": {
+              "width": { "type": "number" },
+              "height": { "type": "number" },
+              "depth": { "type": "number" }
+            }
+          },
+          "configuration": {
+            "type": "object",
+            "properties": {
+              "door_count": { "type": "integer", "default": 1 },
+              "drawer_count": { "type": "integer", "default": 0 },
+              "hinge_side": {
+                "type": "string",
+                "enum": ["left", "right", "both", "none"]
+              },
+              "shelf_count": { "type": "integer" },
+              "has_rollout": { "type": "boolean", "default": false },
+              "has_lazy_susan": { "type": "boolean", "default": false }
+            }
+          },
+          "style": {
+            "type": "object",
+            "properties": {
+              "door_style": { "type": "string" },
+              "finish_package": { "type": "string" },
+              "overlay_type": {
+                "type": "string",
+                "enum": ["full", "partial", "inset"]
+              }
+            }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "appliances": {
+      "type": "array",
+      "description": "Appliance placements",
+      "items": {
+        "type": "object",
+        "required": ["id", "appliance_type", "position", "dimensions"],
+        "properties": {
+          "id": { "type": "string" },
+          "appliance_type": {
+            "type": "string",
+            "enum": [
+              "range", "cooktop", "wall_oven", "microwave",
+              "refrigerator", "dishwasher", "sink",
+              "hood", "downdraft", "trash_compactor",
+              "wine_cooler", "beverage_center"
+            ]
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "wall_id": { "type": "string" },
+              "offset": { "type": "number" },
+              "elevation": { "type": "number", "default": 0 }
+            }
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width": { "type": "number" },
+              "height": { "type": "number" },
+              "depth": { "type": "number" }
+            }
+          },
+          "model": { "type": "string" },
+          "brand": { "type": "string" }
+        }
+      }
+    },
+    "finishes": {
+      "type": "object",
+      "description": "Material and finish specifications",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "description": "Predefined finish packages",
+          "items": {
+            "type": "object",
+            "required": ["id", "name"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "door_material": { "type": "string" },
+              "door_color": { "type": "string" },
+              "box_material": { "type": "string" },
+              "box_color": { "type": "string" },
+              "hardware_style": { "type": "string" },
+              "hardware_finish": { "type": "string" },
+              "countertop_material": { "type": "string" },
+              "countertop_color": { "type": "string" },
+              "price_tier": {
+                "type": "string",
+                "enum": ["budget", "mid", "premium", "luxury"]
+              }
+            }
+          }
+        },
+        "default_package": { "type": "string" }
+      }
+    },
+    "trim": {
+      "type": "object",
+      "description": "Trim and molding specifications",
+      "properties": {
+        "crown_molding": {
+          "type": "object",
+          "properties": {
+            "style": { "type": "string" },
+            "height": { "type": "number" },
+            "locations": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "light_rail": {
+          "type": "object",
+          "properties": {
+            "style": { "type": "string" },
+            "height": { "type": "number" }
+          }
+        },
+        "toe_kick": {
+          "type": "object",
+          "properties": {
+            "height": { "type": "number", "default": 4 },
+            "material": { "type": "string" }
+          }
+        },
+        "fillers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": { "type": "string" },
+              "width": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "shop_rules": {
+      "type": "object",
+      "description": "Shop-specific construction rules",
+      "properties": {
+        "min_filler_width": { "type": "number", "default": 1.5 },
+        "max_filler_width": { "type": "number", "default": 6 },
+        "standard_base_height": { "type": "number", "default": 34.5 },
+        "standard_wall_height": { "type": "number", "default": 30 },
+        "standard_depth_base": { "type": "number", "default": 24 },
+        "standard_depth_wall": { "type": "number", "default": 12 },
+        "corner_cabinet_dead_space": { "type": "number", "default": 3 }
+      }
+    }
+  }
+}
