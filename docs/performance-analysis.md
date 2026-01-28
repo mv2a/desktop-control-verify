@@ -186,6 +186,28 @@ Tab switch (when needed):
 **Effective speed for room creation (5 fields): ~39s startup + <0.1s operations = ~39s total**
 vs current: ~90s × 5 = ~450s (7.5 minutes)
 
+### Live Demo Results (demo_create_room.py, 2026-01-27)
+
+```
+Room: Kitchen | Height: 96.0" | Depths: B=24.0" W=12.0" T=24.0"
+
+  [1] Connect to Mozaik:       18.16s  (PID-based)
+  [2] Batch scan descendants:  101.55s  (11/14 cached)
+  [3] Screenshot (before):      6.55s
+  [4] Set room name = Kitchen:  0.01s  ✓ (confirmed in screenshot)
+  [5] Set wall height = 96.0:   0.06s  ✓ (confirmed in screenshot)
+  [6] Set base depth:           FAILED (Depths sub-tab not active)
+  [7] Set wall depth:           FAILED (Depths sub-tab not active)
+  [8] Set tall depth:           FAILED (Depths sub-tab not active)
+  [9] Screenshot (after):       0.17s
+
+  Total: 126.5s
+  Field operations: 0.07s for 2 fields = 0.014s/field
+```
+
+**Key finding**: Depths are on a separate sub-tab from Heights. Must click "Depths" tab first.
+**Units note**: Mozaik was set to mm (not inches). Need to handle unit conversion.
+
 ## Environment
 
 | Property | Value |
