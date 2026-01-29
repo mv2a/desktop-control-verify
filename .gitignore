@@ -63,3 +63,12 @@ Thumbs.db
 # Build artifacts
 *.dxf
 output/
+
+# Large data files (download separately)
+data/raw/
+data/overnight/
+data/vision_actions/
+
+# Training data (too large for git, use Git LFS or external storage)
+data/training/*.jsonl
+data/eval/*.jsonl
