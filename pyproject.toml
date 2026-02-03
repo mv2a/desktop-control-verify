@@ -107,3 +107,6 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+env = [
+    "MOZAIK_MOCK_VISION=1",
+]

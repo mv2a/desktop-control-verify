@@ -22,18 +22,21 @@ class DrawingExtractor:
     Supports multiple backends:
     - OpenAI GPT-4V
     - Anthropic Claude
+    - Ollama (local vision models via API)
     - Local models (LLaVA, etc.)
     """
 
     def __init__(
         self,
-        backend: Literal["openai", "anthropic", "local"] = "anthropic",
+        backend: Literal["openai", "anthropic", "ollama", "local"] = "anthropic",
         model: Optional[str] = None,
         api_key: Optional[str] = None,
+        ollama_host: Optional[str] = None,
     ):
         self.backend = backend
         self.model = model or self._default_model()
         self.api_key = api_key
+        self.ollama_host = ollama_host or "http://14coresbeast:11434"
         self._client = None
 
     def _default_model(self) -> str:
@@ -41,6 +44,7 @@ class DrawingExtractor:
         defaults = {
             "openai": "gpt-4o",
             "anthropic": "claude-sonnet-4-20250514",
+            "ollama": "minicpm-v:latest",
             "local": "llava-v1.6-mistral-7b",
         }
         return defaults.get(self.backend, "gpt-4o")
@@ -181,6 +185,8 @@ Only include what you can see or reasonably infer from the drawing.
             result = self._extract_anthropic(image_data, media_type, prompt)
         elif self.backend == "openai":
             result = self._extract_openai(image_data, media_type, prompt)
+        elif self.backend == "ollama":
+            result = self._extract_ollama(image_data, media_type, prompt)
         else:
             result = self._extract_local(image_data, prompt)
 
@@ -248,6 +254,47 @@ Only include what you can see or reasonably infer from the drawing.
         )
 
         response_text = response.choices[0].message.content
+        return self._parse_json_response(response_text)
+
+    def _extract_ollama(
+        self, image_data: str, media_type: str, prompt: str
+    ) -> dict[str, Any]:
+        """Extract using Ollama vision model via REST API."""
+        import httpx
+
+        url = f"{self.ollama_host}/api/chat"
+
+        # Ollama expects images as base64 in the images array
+        payload = {
+            "model": self.model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                    "images": [image_data],
+                }
+            ],
+            "stream": False,
+        }
+
+        try:
+            response = httpx.post(
+                url,
+                json=payload,
+                timeout=300.0,  # 5 minutes for CPU inference
+            )
+            response.raise_for_status()
+        except httpx.ConnectError as e:
+            raise ConnectionError(
+                f"Could not connect to Ollama at {self.ollama_host}. "
+                f"Ensure Ollama is running: {e}"
+            )
+        except httpx.HTTPStatusError as e:
+            raise RuntimeError(f"Ollama API error: {e.response.status_code} - {e.response.text}")
+
+        result = response.json()
+        response_text = result.get("message", {}).get("content", "")
+
         return self._parse_json_response(response_text)
 
     def _extract_local(self, image_data: str, prompt: str) -> dict[str, Any]:
