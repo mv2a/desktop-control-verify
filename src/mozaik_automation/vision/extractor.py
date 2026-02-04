@@ -303,18 +303,55 @@ Only include what you can see or reasonably infer from the drawing.
         raise NotImplementedError("Local model extraction not yet implemented")
 
     def _parse_json_response(self, text: str) -> dict[str, Any]:
-        """Parse JSON from model response, handling markdown code blocks."""
+        """Parse JSON from model response, handling various formats."""
+        import re
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        # Log raw response for debugging
+        logger.debug(f"Raw vision response ({len(text)} chars): {text[:500]}...")
+
         # Strip markdown code blocks if present
         if "```json" in text:
             start = text.find("```json") + 7
             end = text.find("```", start)
-            text = text[start:end].strip()
+            if end > start:
+                text = text[start:end].strip()
         elif "```" in text:
             start = text.find("```") + 3
             end = text.find("```", start)
-            text = text[start:end].strip()
+            if end > start:
+                text = text[start:end].strip()
 
-        return json.loads(text)
+        # Try to find JSON object in the text
+        # Look for outermost { ... }
+        brace_start = text.find("{")
+        if brace_start >= 0:
+            # Find matching closing brace
+            depth = 0
+            for i, c in enumerate(text[brace_start:], brace_start):
+                if c == "{":
+                    depth += 1
+                elif c == "}":
+                    depth -= 1
+                    if depth == 0:
+                        text = text[brace_start:i+1]
+                        break
+
+        # Try to parse
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON parse failed: {e}. Trying cleanup...")
+
+            # Common fixes for LLM output
+            # Remove trailing commas before } or ]
+            text = re.sub(r',\s*}', '}', text)
+            text = re.sub(r',\s*]', ']', text)
+
+            # Try again
+            return json.loads(text)
 
     def extract_to_spec(
         self,

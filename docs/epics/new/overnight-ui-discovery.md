@@ -6,7 +6,7 @@
 
 ## Context
 
-- **14coresbeast**: Windows machine with WSL2 (SSH port 2222, IP: 192.168.1.103)
+- **14coresbeast**: Windows machine with WSL2 (SSH port 2222, IP: 192.168.1.2)
 - **Mozaik Enterprise** running on Windows side
 - **pywinauto 0.6.9** (uses `title=` not `name=` for `child_window()`)
 - **Python 3.9.9** on Windows, invoked from WSL via `python.exe`

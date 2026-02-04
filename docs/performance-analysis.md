@@ -363,7 +363,7 @@ vs. current batch approach: **8-10 min per room**
 
 | Property | Value |
 |----------|-------|
-| Machine | 14coresbeast (192.168.1.103:2222) |
+| Machine | 14coresbeast (192.168.1.2:2222) |
 | OS | Windows (WSL2 SSH) |
 | Python | 3.9.9 |
 | pywinauto | 0.6.9 |
