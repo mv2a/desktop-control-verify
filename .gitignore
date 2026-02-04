@@ -46,6 +46,7 @@ htmlcov/
 # Local config
 .env
 .env.local
+.env.prod
 *.local.json
 
 # Database
