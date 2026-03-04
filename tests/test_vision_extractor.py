@@ -66,6 +66,103 @@ class TestExtractionPrompt:
         assert "JSON" in prompt
 
 
+class TestExtractionPromptPollerFormat:
+    """T005: Tests that extraction prompt contains all poller-compatible fields."""
+
+    def test_prompt_contains_room_shape(self):
+        """Prompt must request room.shape field."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "shape" in prompt.lower()
+        assert "U-shape" in prompt or "single-wall" in prompt
+
+    def test_prompt_contains_wall_names(self):
+        """Prompt must specify wall naming convention."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        for name in ["left", "back", "right"]:
+            assert name in prompt.lower()
+
+    def test_prompt_contains_cabinet_wall_reference(self):
+        """Prompt must show cabinets reference a wall by name."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert '"wall"' in prompt
+
+    def test_prompt_contains_position_along_wall(self):
+        """Prompt must include position_along_wall field and formula."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "position_along_wall" in prompt
+        assert "cumulative_width" in prompt or "cumulative" in prompt.lower()
+
+    def test_prompt_contains_parsed_counts(self):
+        """Prompt must include parsed counts (base/wall/tall)."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert '"parsed"' in prompt
+        assert '"base"' in prompt
+        assert '"wall"' in prompt
+        assert '"tall"' in prompt
+
+    def test_prompt_contains_appliances_section(self):
+        """Prompt must include appliances array in schema."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert '"appliances"' in prompt
+        assert "sink" in prompt.lower()
+        assert "range" in prompt.lower()
+        assert "refrigerator" in prompt.lower()
+
+
+class TestExtractionClassificationRules:
+    """T006: Tests that extraction prompt enforces Mozaik classification rules."""
+
+    def test_fridge_is_appliance_not_cabinet(self):
+        """Fridges must be classified as appliance, never tall cabinet."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "refrigerator" in prompt.lower()
+        assert "NEVER" in prompt  # "NEVER cabinet: tall" rule
+        # Check the rule is explicit
+        assert "appliance" in prompt.lower()
+
+    def test_skip_dishwashers(self):
+        """Dishwashers must be skipped entirely."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "dishwasher" in prompt.lower()
+        assert "SKIP" in prompt
+
+    def test_skip_microwaves(self):
+        """Microwaves must be skipped entirely."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "microwave" in prompt.lower()
+        assert "SKIP" in prompt
+
+    def test_builtin_oven_is_tall_cabinet(self):
+        """Built-in wall oven must be classified as tall cabinet with note."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "oven" in prompt.lower()
+        assert "tall" in prompt.lower()
+        assert "note" in prompt.lower() or "oven cabinet" in prompt.lower()
+
+    def test_range_is_appliance(self):
+        """Freestanding/slide-in range must be classified as appliance."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "range" in prompt.lower()
+        assert "appliance" in prompt.lower()
+
+    def test_hood_is_appliance(self):
+        """Range hood must be classified as appliance."""
+        extractor = DrawingExtractor()
+        prompt = extractor._build_extraction_prompt()
+        assert "hood" in prompt.lower()
+
+
 class TestJsonParsing:
     """Tests for JSON response parsing."""
 
