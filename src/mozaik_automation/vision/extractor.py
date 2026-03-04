@@ -96,49 +96,78 @@ class DrawingExtractor:
             raise ImportError("pdf2image is required for PDF processing")
 
     def _build_extraction_prompt(self) -> str:
-        """Build the prompt for cabinet extraction."""
-        return """Analyze this architectural drawing and extract cabinet design specifications.
+        """Build the prompt for cabinet extraction.
 
-You are an expert cabinet designer. Extract all visible information about:
+        Output format matches the poller's expected schema (demo_e2e_poller.py).
+        Classification rules follow docs/personas/extraction-qa.md.
+        """
+        return """Analyze this architectural drawing and extract kitchen cabinet specifications.
 
-1. **Room Geometry**:
-   - Wall positions and lengths (in inches or mm as shown)
-   - Ceiling height
-   - Door and window openings with positions
+You are an expert Mozaik cabinet designer. Extract all visible information following these rules:
 
-2. **Cabinet Layout**:
-   - Each cabinet's type (base, wall, tall, corner, island)
-   - Position along wall (offset from start)
-   - Dimensions (width, height, depth)
-   - Configuration (doors, drawers, hinges)
+## Classification Rules (CRITICAL)
+- Fridges (any style) → appliance: refrigerator (NEVER cabinet: tall)
+- Dishwashers → SKIP entirely (no Mozaik tab)
+- Microwaves → SKIP entirely (no Mozaik tab)
+- Built-in wall oven → cabinet: tall with note: "oven cabinet"
+- Freestanding/slide-in range → appliance: range
+- Range hood / vent hood → appliance: hood
+- Sink in countertop → appliance: sink
 
-3. **Appliances**:
-   - Type (range, sink, refrigerator, etc.)
-   - Position and dimensions
+## Room Shape Rules
+- 1 wall with items → shape: "single-wall"
+- 2-3 walls with items → shape: "U-shape" (left + back + right)
+- NEVER use "L-shape" with notch walls
 
-4. **Finishes** (if visible/noted):
-   - Door style
-   - Material/color
-   - Hardware
+## Wall Naming
+- Use: "left", "back", "right", "right-upper" (for L-shape asymmetry only)
 
-Return a JSON object matching this schema:
+## Position Along Wall
+For each cabinet, compute: position_along_wall = (cumulative_width_before + item_width/2) / wall_length
+Round to 2 decimal places. Assign sequence (1-based, L→R per wall).
+
+Return a JSON object matching this exact schema:
 {
-  "metadata": {"job_name": "...", "source_type": "floor_plan|elevation|sketch"},
   "room": {
-    "units": "in",
-    "ceiling_height": 96,
-    "walls": [{"id": "W1", "start": [0,0], "end": [156,0]}],
-    "openings": [{"type": "window", "wall_id": "W1", "offset": 48, "width": 36, "height": 48}]
+    "name": "Kitchen",
+    "shape": "U-shape|single-wall|L-shape",
+    "walls": [
+      {"name": "left", "length": 120},
+      {"name": "back", "length": 180},
+      {"name": "right", "length": 120}
+    ],
+    "ceilingHeight": 96
   },
   "cabinets": [
     {
-      "id": "B1",
-      "cabinet_type": "base",
-      "position": {"wall_id": "W1", "offset": 0},
-      "dimensions": {"width": 24, "height": 34.5, "depth": 24}
+      "type": "base|wall|tall",
+      "width": 24,
+      "height": 34.5,
+      "depth": 24,
+      "wall": "back",
+      "position_along_wall": 0.15,
+      "sequence": 1,
+      "note": "optional description"
     }
   ],
-  "appliances": []
+  "appliances": [
+    {"type": "sink|range|hood|refrigerator", "wall": "back"}
+  ],
+  "features": {
+    "island": false,
+    "appliances": ["sink", "range", "hood"]
+  },
+  "finish_notes": {
+    "door_style": "shaker",
+    "countertop": "granite",
+    "molding": false,
+    "hardware": "unknown"
+  },
+  "parsed": {
+    "base": 6,
+    "wall": 3,
+    "tall": 1
+  }
 }
 
 Be precise with measurements. If dimensions aren't clear, estimate based on standard cabinet sizes.
