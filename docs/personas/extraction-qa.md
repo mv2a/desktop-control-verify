@@ -40,7 +40,27 @@ Map visual elements to correct extraction types. These rules prevent the most co
 
 ---
 
-## 7-Step Validation Procedure
+## 9-Step Validation Procedure
+
+### Step 0: Classify Drawing Type
+
+Before extracting anything, identify the drawing type. This determines the room shape.
+
+| Drawing Type | Indicators | Room Shape |
+|---|---|---|
+| **Front Elevation** | Title says "elevation/front view", items in layers (wall cabs top, base cabs bottom), single dimension line across = wall width | `single-wall` |
+| **Plan View** | Top-down view, room outline visible, items around perimeter, door swings shown | `U-shape` (3 walls) or `single-wall` (1 wall) |
+| **Multi-Elevation Composite** | Multiple wall sections shown unfolded, corner visible where walls meet | `U-shape` for 2-3 walls, `single-wall` for 1 wall |
+| **Shop Drawing (plan)** | Cabinet codes annotated, dimension lines on multiple axes, plan view with detailed codes | Same as plan view — count walls with cabinets |
+
+**Shape Selection Rules:**
+
+- 1 wall with items → `single-wall`
+- 2 perpendicular walls → `U-shape` (left + back, omit right or set right length short)
+- 3 walls → `U-shape` (left + back + right)
+- **Never use `L-shape` with notch walls** — the enclosed polygon creates terrible 3D views. Use `L-shape` only for asymmetric left/right (e.g., left=144", right-upper=72"). The L-shape geometry draws 3 open walls, same as U-shape but with different left and right heights.
+
+**Key rule:** If items appear on TWO perpendicular runs with different dimension lines, it's TWO walls — use `U-shape`. If items are all on one linear run, it's `single-wall`.
 
 ### Step 1: Image Inventory
 
@@ -141,6 +161,21 @@ Capture non-cabinet metadata visible in the image:
 - **Framing**: face frame vs frameless
 
 Record in `result.finish_notes` for downstream awareness (not yet automated).
+
+### Step 8: Mozaik Verification
+
+After all extraction corrections, verify the build in Mozaik:
+
+1. Run: `python scripts/demo_e2e_poller.py --build <job_prefix>`
+2. Check 3D screenshot against the uploaded drawing:
+   - [ ] Room shape matches (open walls, no enclosed box)
+   - [ ] Cabinet count matches extraction
+   - [ ] Cabinet positions follow L→R order per wall
+   - [ ] No cabinets overlapping or clipping through walls
+   - [ ] No "Product Won't Fit" warnings in build log
+   - [ ] Appliances (sink, range, hood, fridge) in correct positions
+3. If issues found → update extraction, rebuild, re-verify
+4. Save `build_log.txt` to pending job dir
 
 ---
 
@@ -253,12 +288,15 @@ Every corrected extraction must have:
 [ ] Uploaded image is readable (not blurry, has dimensions)
 [ ] Raw extraction JSON exists (from vision model or manual)
 [ ] Image and extraction are for the same floor plan
-[ ] Room shape is identified (U-shape, L-shape, single-wall, galley)
+[ ] Drawing type classified (Step 0: elevation, plan, composite, shop)
+[ ] Room shape is correct (U-shape for 2-3 walls, single-wall for 1, L-shape only for asymmetric sides)
 ```
 
 ### Post-Review Checklist
 
 ```
+[ ] Drawing type classified (Step 0: elevation, plan, composite, shop)
+[ ] Room shape correct (never L-shape with notch walls; use U-shape for 3 walls)
 [ ] Every visible element accounted for (no missing, no extra)
 [ ] All fridges classified as appliance, not tall cabinet
 [ ] All dishwashers/microwaves removed (no Mozaik tab)
@@ -272,6 +310,8 @@ Every corrected extraction must have:
 [ ] finish_notes captured (door style, countertop, molding)
 [ ] qa_review section written (replaces llm_review)
 [ ] validate_extraction() returns no warnings
+[ ] Mozaik build verified (Step 8: 3D matches drawing, no overlap/clipping)
+[ ] build_log.txt saved to pending job dir
 ```
 
 ### Common Error Patterns
