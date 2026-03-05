@@ -9,6 +9,16 @@
 
 Validate that corrected extraction JSON accurately represents the uploaded floor plan image. Bridge the gap between raw vision extraction and automation-ready specifications by applying Mozaik-specific classification rules and spatial validation.
 
+## Invocation
+
+This persona is invoked **automatically** by the watcher (`_handle_build_request()`) when a user clicks "Start Mozaik Build":
+
+1. **Pre-build QA** (Steps 1-6b): `validate_extraction()` runs programmatic checks. Build is **blocked** if any warnings.
+2. **Build execution** (Step 8b): `run_build()` builds the kitchen in Mozaik.
+3. **Post-build verification** (Steps 8c-8f): `_run_post_build_verification()` captures 3D, compares vs upload, and corrects. This is **mandatory** — it cannot be skipped.
+
+No manual invocation is required. The watcher handles the full pipeline.
+
 ---
 
 ## Mozaik Classification Rules
@@ -164,18 +174,94 @@ Record in `result.finish_notes` for downstream awareness (not yet automated).
 
 ### Step 8: Mozaik Verification
 
-After all extraction corrections, verify the build in Mozaik:
+After all extraction corrections, verify the build in Mozaik.
 
-1. Run: `python scripts/demo_e2e_poller.py --build <job_prefix>`
-2. Check 3D screenshot against the uploaded drawing:
-   - [ ] Room shape matches (open walls, no enclosed box)
-   - [ ] Cabinet count matches extraction
-   - [ ] Cabinet positions follow L→R order per wall
-   - [ ] No cabinets overlapping or clipping through walls
-   - [ ] No "Product Won't Fit" warnings in build log
-   - [ ] Appliances (sink, range, hood, fridge) in correct positions
-3. If issues found → update extraction, rebuild, re-verify
-4. Save `build_log.txt` to pending job dir
+#### 8a. Pre-Build: Clean Slate
+
+Before building, ensure no stale state from prior builds:
+
+- [ ] **Job identity**: After "Opening Job", confirm the title bar shows the EXPECTED job name (not a previous build). The poller clicks "first job row" — if the wrong job is at row 1, all placements go into the wrong room.
+- [ ] **Empty room**: The job should have an empty room before wall drawing begins. If the tree view (left panel) already shows cabinets or appliances, STOP — you are in the wrong job.
+
+#### 8b. Build Execution: Monitor Every Placement
+
+Run: `python scripts/demo_e2e_poller.py --build <job_prefix>`
+
+**"Product Won't Fit" dialogs are FAILURES, not ignorable warnings.** When Mozaik shows this dialog:
+
+1. The cabinet/appliance was NOT placed (or was placed incorrectly)
+2. Dismissing the dialog does NOT fix the placement
+3. The item may be floating in space, overlapping another item, or missing entirely
+
+**For each placement in the build log, verify:**
+
+- [ ] No "Warning..." or "Product Won't Fit" dialog was triggered
+- [ ] If a dialog WAS triggered: record which item, which wall, and what position caused it
+- [ ] Count warnings: 0 warnings = pass, 1-2 warnings = investigate, 3+ warnings = rebuild with adjusted positions
+
+#### 8c. 3D Visual Inspection
+
+Compare the 3D screenshot to the uploaded drawing item-by-item:
+
+**Room structure:**
+- [ ] Room shape matches (open walls, no enclosed box)
+- [ ] Correct number of walls visible
+- [ ] Title bar shows the correct job name
+
+**Appliance count (CRITICAL — most common failure):**
+- [ ] Exactly 1 range/cooktop (not 2, not 0)
+- [ ] Exactly 1 hood (if in extraction)
+- [ ] Exactly 1 sink (if in extraction)
+- [ ] Exactly 1 fridge (if in extraction, 0 if not)
+- [ ] No duplicate appliances from prior builds bleeding through
+- [ ] No floating/disconnected appliances (every appliance must be against a wall or on a surface)
+
+**Cabinet placement:**
+- [ ] Cabinet count in tree view matches extraction total (base + wall + tall)
+- [ ] No unexpected categories in tree (e.g., "Vanity" items in a kitchen = wrong job or stale data)
+- [ ] Base cabinets sit on the floor against walls (not floating)
+- [ ] Wall cabinets are mounted on walls (not floating in space)
+- [ ] Cabinets follow L→R order per wall as specified in extraction
+- [ ] No cabinets overlapping each other or clipping through walls
+
+**Known failure patterns:**
+| Symptom | Cause | Fix |
+|---|---|---|
+| Too many stoves/ovens | Prior build's appliances in same job | Delete old job, rebuild in clean job |
+| Floating cabinet/appliance | "Won't Fit" dialog dismissed, item placed in void | Adjust `position_along_wall` to avoid collision, rebuild |
+| Cabinets on wrong wall | Job opened wrong row (title bar mismatch) | Fix poller job-opening logic, rebuild |
+| Wall cabs overlapping | Positions too close together near hood gap | Spread positions, increase gap around appliances |
+| "Vanity" items in kitchen | Stale Mozaik session or wrong job | Close Mozaik, restart, rebuild |
+
+#### 8d. Pass/Fail Decision
+
+| Result | Criteria | Action |
+|---|---|---|
+| **PASS** | 0 warnings, all checks green, 3D matches drawing | Save build_log.txt, mark job done |
+| **RETRY** | 1-2 warnings, minor position issues | Adjust extraction positions, rebuild |
+| **FAIL** | 3+ warnings, wrong job, floating items, duplicate appliances | Investigate root cause, fix extraction AND poller issues, rebuild from scratch |
+
+#### 8e. Post-Build (Mandatory)
+
+1. Save `build_log.txt` to pending job dir — **always written, never skipped**
+2. Save `3d_verify.png` screenshot to pending job dir — **always captured**
+3. Record pass/fail status, corrections applied, and retry count
+
+#### 8f. Correction Loop (Post-Build)
+
+When discrepancies are found in 3D (Step 8c/8d), the builder **must** correct them in-place:
+
+1. **Return to 2D**: `moz.return_to_2d()` — exits 3D back to 2D layout
+2. **Select item**: `moz.select_item_at(x, y)` — click on the misplaced cabinet/appliance
+3. **Delete**: `moz.delete_selected()` — remove the offending item
+4. **Reposition/replace**: `moz.drag(src_x, src_y, dst_x, dst_y)` — drag from Products tab or reposition
+5. **Re-enter 3D**: `moz.enter_3d_view()` — switch back to 3D for re-verification
+6. **Re-capture**: Take new `3d_verify_N.png` screenshot
+7. **Re-check**: Repeat Steps 8c-8d
+
+**Retry limit**: Max 2 correction rounds. After 3 total checks (initial + 2 retries), save final state and exit.
+
+**Key principle**: The build is not considered complete until `_run_post_build_verification()` finishes. This function is called from `_handle_build_request()` directly — there is no code path that skips it after a successful build.
 
 ---
 
@@ -310,8 +396,15 @@ Every corrected extraction must have:
 [ ] finish_notes captured (door style, countertop, molding)
 [ ] qa_review section written (replaces llm_review)
 [ ] validate_extraction() returns no warnings
-[ ] Mozaik build verified (Step 8: 3D matches drawing, no overlap/clipping)
-[ ] build_log.txt saved to pending job dir
+[ ] Mozaik build: title bar shows correct job name (8a)
+[ ] Mozaik build: 0 "Product Won't Fit" warnings (8b — failures, not ignorable)
+[ ] Mozaik build: exact appliance count matches extraction (no duplicates, no floating) (8c)
+[ ] Mozaik build: cabinet count in tree matches extraction total (8c)
+[ ] Mozaik build: no floating/disconnected items in 3D (8c)
+[ ] Mozaik build: 3D visually matches uploaded drawing (8c)
+[ ] Mozaik build: pass/fail recorded with build_log.txt + 3d_verify.png (8e)
+[ ] Mozaik build: if discrepancies found, correction loop ran (return to 2D → fix → re-verify) (8f)
+[ ] Mozaik build: max 2 correction retries before accepting final state (8f)
 ```
 
 ### Common Error Patterns
@@ -326,7 +419,12 @@ Every corrected extraction must have:
 | Missing sink | No sink in appliances but visible in image | Add `appliance: sink` on correct wall |
 | No wall assignments | `cabinets[].wall` missing | Add wall field to every cabinet |
 | Width overflow | Sum of items > wall length + 6" | Re-check widths against image dimensions |
+| **Floating appliance** | Stove/fridge/sink disconnected from wall in 3D | "Won't Fit" dialog was dismissed — adjust `position_along_wall` to avoid collision |
+| **Duplicate appliances** | 2+ ranges or 2+ fridges in 3D | Built into wrong job (prior build). Check title bar, rebuild in clean job |
+| **Wrong job opened** | Title bar shows different job name than expected | Poller opened stale row 1. Delete old job or scroll to correct row |
+| **"Won't Fit" dismissed** | Warning dialogs in build log marked "dismissed" | Item NOT placed correctly. Adjust position or width, rebuild |
+| **Vanity in kitchen** | Tree view shows "Vanity" section with items | Wrong job or stale Mozaik session. Close Mozaik, restart, rebuild |
 
 ---
 
-*Last Updated: 2026-03-03*
+*Last Updated: 2026-03-04*
