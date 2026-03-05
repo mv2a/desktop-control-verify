@@ -75,7 +75,19 @@ def _parse_drawer_count(note: str) -> int | None:
 
 
 def _has_sink_in_note(note: str) -> bool:
-    return "sink" in note.lower()
+    """True if the cabinet IS a sink cabinet, not just positioned near one."""
+    if not note:
+        return False
+    lower = note.lower()
+    if "sink" not in lower:
+        return False
+    # Reject positional references — the cabinet is near a sink, not a sink itself
+    positional = ["above sink", "near sink", "next to sink", "by sink", "beside sink",
+                   "adjacent to sink", "opposite sink"]
+    for phrase in positional:
+        if phrase in lower:
+            return False
+    return True
 
 
 def _parse_sink_bowls_from_note(note: str) -> int | None:
@@ -86,6 +98,85 @@ def _parse_sink_bowls_from_note(note: str) -> int | None:
     if "single" in note_lower or "1 bowl" in note_lower:
         return 1
     return None
+
+
+def pre_build_cross_check(
+    extraction: dict,
+    upload_analysis: dict,
+    tolerance: int = 0,
+) -> VerificationResult:
+    """Pre-build gate: compare extraction counts against independent image analysis.
+
+    Catches extraction errors BEFORE building (BUG-22 / D9.11).
+    An independent vision call counts cabinets in the upload image.
+    If counts diverge from the extraction, the build is blocked.
+
+    Args:
+        extraction: The extraction JSON with parsed counts.
+        upload_analysis: Structured JSON from analyzing the upload image.
+        tolerance: Allowed count difference per category (0=exact, 1=off-by-one OK).
+
+    Returns:
+        VerificationResult — FAIL blocks the build, PASS allows it to proceed.
+    """
+    checks: list[CheckResult] = []
+
+    parsed = extraction.get("parsed", {})
+    appliances = extraction.get("appliances", [])
+
+    up_base = upload_analysis.get("base_cabinets", [])
+    up_wall = upload_analysis.get("wall_cabinets", [])
+    up_tall = upload_analysis.get("tall_cabinets", [])
+    up_appliances = upload_analysis.get("appliances", [])
+
+    # Count checks with tolerance
+    for name, expected, actual_list in [
+        ("pre_build_base_count", parsed.get("base", 0), up_base),
+        ("pre_build_wall_count", parsed.get("wall", 0), up_wall),
+        ("pre_build_tall_count", parsed.get("tall", 0), up_tall),
+    ]:
+        actual = len(actual_list)
+        diff = abs(expected - actual)
+        checks.append(CheckResult(
+            name=name,
+            category="pre_build_count",
+            expected=expected,
+            actual=actual,
+            passed=diff <= tolerance,
+            detail=f"Extraction: {expected}, upload image: {actual}"
+                   + (f" (tolerance={tolerance})" if tolerance else ""),
+        ))
+
+    # Appliance type check
+    ext_types = sorted({a.get("type", "").lower() for a in appliances})
+    up_types = sorted({a.get("type", "").lower() for a in up_appliances})
+    checks.append(CheckResult(
+        name="pre_build_appliance_types",
+        category="pre_build_appliance",
+        expected=ext_types,
+        actual=up_types,
+        passed=ext_types == up_types,
+        detail=f"Extraction appliances: {ext_types}, upload image: {up_types}",
+    ))
+
+    # Build result
+    failures = [c for c in checks if not c.passed]
+    passed = len(failures) == 0
+
+    lines = []
+    lines.append(f"PRE-BUILD {'PASS' if passed else 'FAIL'} — {len(checks) - len(failures)}/{len(checks)} checks passed")
+    if failures:
+        lines.append("")
+        lines.append("FAILURES:")
+        for f in failures:
+            lines.append(f"  [{f.name}] {f.detail}")
+
+    return VerificationResult(
+        passed=passed,
+        checks=checks,
+        failures=failures,
+        summary="\n".join(lines),
+    )
 
 
 def compare_extraction_to_analysis(

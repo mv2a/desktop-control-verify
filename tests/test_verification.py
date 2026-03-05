@@ -1,4 +1,4 @@
-"""TDD tests for programmatic build verification (D9.9).
+"""TDD tests for programmatic build verification (D9.9) and pre-build cross-check (D9.11).
 
 The verification is enforced IN CODE — not by LLM judgment.
 The LLM analyzes images via API → Python code compares → deterministic PASS/FAIL.
@@ -9,6 +9,8 @@ from mozaik_automation.verification.comparator import (
     CheckResult,
     VerificationResult,
     compare_extraction_to_analysis,
+    pre_build_cross_check,
+    _has_sink_in_note,
 )
 
 
@@ -330,3 +332,193 @@ class TestVerificationResultProperties:
         )
         assert result.fail_count >= 1
         assert result.pass_count == result.total_checks - result.fail_count
+
+
+# ---------------------------------------------------------------------------
+# _has_sink_in_note — must not false-positive on positional references
+# ---------------------------------------------------------------------------
+
+class TestHasSinkInNote:
+    def test_sink_base_cabinet_is_true(self):
+        assert _has_sink_in_note("Sink base cabinet") is True
+
+    def test_sink_base_with_opening_is_true(self):
+        assert _has_sink_in_note("Sink base cabinet with 29 7/8 inch opening") is True
+
+    def test_above_sink_area_is_false(self):
+        """Wall cab 'above sink area' is NOT a sink cabinet."""
+        assert _has_sink_in_note("Pair door wall cabinet, 45 inch wide, above sink area") is False
+
+    def test_near_sink_is_false(self):
+        assert _has_sink_in_note("Single door base, near sink") is False
+
+    def test_next_to_sink_is_false(self):
+        assert _has_sink_in_note("Wall cabinet next to sink base") is False
+
+    def test_no_sink_at_all_is_false(self):
+        assert _has_sink_in_note("3-drawer base unit") is False
+
+    def test_plain_sink_word_at_start_is_true(self):
+        assert _has_sink_in_note("sink cabinet with faucet") is True
+
+    def test_empty_note_is_false(self):
+        assert _has_sink_in_note("") is False
+
+    def test_above_sink_area_wall_cab_no_false_positive_in_verification(self):
+        """Full integration: wall cab note with 'above sink area' must NOT trigger sink check fail."""
+        ext = _extraction(
+            base=2, wall=1, tall=0,
+            cabinets=[
+                {"type": "base", "width": 36, "note": "Sink base cabinet"},
+                {"type": "base", "width": 24, "note": "3-drawer base"},
+                {"type": "wall", "width": 45, "note": "Pair door wall cabinet, above sink area"},
+            ],
+            appliances=[{"type": "sink"}],
+        )
+        screenshot = _analysis(
+            base_cabs=[
+                {"position": "left", "doors": 2, "drawers": 0, "has_sink": True},
+                {"position": "right", "doors": 0, "drawers": 3, "has_sink": False},
+            ],
+            wall_cabs=[
+                {"position": "center", "doors": 2, "has_sink": False},
+            ],
+        )
+        upload = _analysis(
+            base_cabs=[
+                {"position": "left", "doors": 2, "drawers": 0, "has_sink": True},
+                {"position": "right", "doors": 0, "drawers": 3, "has_sink": False},
+            ],
+            wall_cabs=[
+                {"position": "center", "doors": 2, "has_sink": False},
+            ],
+        )
+        result = compare_extraction_to_analysis(ext, screenshot, upload)
+        # The wall cab check should PASS — "above sink area" is not a sink
+        wall_check = next(c for c in result.checks if c.name == "cabinet_2_config")
+        assert wall_check.passed, f"Wall cab false positive: {wall_check.detail}"
+
+
+# ---------------------------------------------------------------------------
+# Pre-build cross-check (D9.11 / BUG-22)
+# ---------------------------------------------------------------------------
+
+class TestPreBuildCrossCheck:
+    """pre_build_cross_check() compares an independent image analysis against
+    the extraction BEFORE building. Catches extraction errors early."""
+
+    def test_matching_counts_passes(self):
+        """Upload analysis agrees with extraction — build should proceed."""
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}, {}],
+            wall_cabs=[{}, {}],
+            tall_cabs=[],
+        )
+        result = pre_build_cross_check(ext, upload)
+        assert result.passed is True
+
+    def test_missing_wall_cabinet_fails(self):
+        """Extraction says 2W, upload image shows 3W — MUST block build."""
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}, {}],
+            wall_cabs=[{}, {}, {}],  # image shows 3!
+            tall_cabs=[],
+        )
+        result = pre_build_cross_check(ext, upload)
+        assert result.passed is False
+        wall_check = next(c for c in result.checks if c.name == "pre_build_wall_count")
+        assert not wall_check.passed
+        assert wall_check.expected == 2
+        assert wall_check.actual == 3
+
+    def test_extra_base_in_extraction_fails(self):
+        """Extraction says 4B, upload shows 3B."""
+        ext = _extraction(base=4, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}, {}],
+            wall_cabs=[{}, {}],
+        )
+        result = pre_build_cross_check(ext, upload)
+        assert result.passed is False
+        base_check = next(c for c in result.checks if c.name == "pre_build_base_count")
+        assert not base_check.passed
+        assert base_check.expected == 4
+        assert base_check.actual == 3
+
+    def test_tall_mismatch_fails(self):
+        """Extraction says 0T, upload shows 1T."""
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}, {}],
+            wall_cabs=[{}, {}],
+            tall_cabs=[{"position": "right", "doors": 2}],
+        )
+        result = pre_build_cross_check(ext, upload)
+        assert result.passed is False
+        tall_check = next(c for c in result.checks if c.name == "pre_build_tall_count")
+        assert not tall_check.passed
+
+    def test_appliance_mismatch_fails(self):
+        """Extraction has sink, upload image shows sink + range."""
+        ext = _extraction(appliances=[{"type": "sink"}])
+        upload = _analysis(appliances=[
+            {"type": "sink", "sink_bowls": 1},
+            {"type": "range"},
+        ])
+        result = pre_build_cross_check(ext, upload)
+        assert result.passed is False
+        app_check = next(c for c in result.checks if c.name == "pre_build_appliance_types")
+        assert not app_check.passed
+
+    def test_appliance_match_passes(self):
+        """Both extraction and upload agree on sink only."""
+        ext = _extraction(appliances=[{"type": "sink"}])
+        upload = _analysis(appliances=[{"type": "sink", "sink_bowls": 1}])
+        result = pre_build_cross_check(ext, upload)
+        app_check = next(c for c in result.checks if c.name == "pre_build_appliance_types")
+        assert app_check.passed
+
+    def test_tolerance_of_one_allowed(self):
+        """Off-by-one on base count is a warning, not a failure (vision noise)."""
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}, {}, {}],  # 4 vs expected 3 — off by 1
+            wall_cabs=[{}, {}],
+        )
+        result = pre_build_cross_check(ext, upload, tolerance=1)
+        base_check = next(c for c in result.checks if c.name == "pre_build_base_count")
+        assert base_check.passed  # within tolerance
+
+    def test_tolerance_exceeded_fails(self):
+        """Off-by-two exceeds tolerance=1."""
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}, {}, {}, {}],  # 5 vs expected 3 — off by 2
+            wall_cabs=[{}, {}],
+        )
+        result = pre_build_cross_check(ext, upload, tolerance=1)
+        base_check = next(c for c in result.checks if c.name == "pre_build_base_count")
+        assert not base_check.passed
+
+    def test_summary_lists_failures(self):
+        """Summary string must mention every failed check."""
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(
+            base_cabs=[{}, {}],         # wrong
+            wall_cabs=[{}, {}, {}],     # wrong
+        )
+        result = pre_build_cross_check(ext, upload)
+        assert result.passed is False
+        assert "FAIL" in result.summary
+        for f in result.failures:
+            assert f.name in result.summary
+
+    def test_result_has_check_counts(self):
+        ext = _extraction(base=3, wall=2, tall=0)
+        upload = _analysis(base_cabs=[{}, {}, {}], wall_cabs=[{}, {}])
+        result = pre_build_cross_check(ext, upload)
+        assert result.total_checks >= 4  # base, wall, tall, appliances
+        assert result.pass_count == result.total_checks
+        assert result.fail_count == 0
