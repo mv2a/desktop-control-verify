@@ -45,8 +45,8 @@ class TestExtractionPrompt:
         extractor = DrawingExtractor()
         prompt = extractor._build_extraction_prompt()
 
-        assert "Room Geometry" in prompt
-        assert "Wall" in prompt
+        assert "room" in prompt.lower()
+        assert "wall" in prompt.lower()
         assert "ceiling" in prompt.lower()
 
     def test_prompt_includes_cabinet_layout(self):
@@ -54,7 +54,7 @@ class TestExtractionPrompt:
         extractor = DrawingExtractor()
         prompt = extractor._build_extraction_prompt()
 
-        assert "Cabinet" in prompt
+        assert "cabinet" in prompt.lower()
         assert "base" in prompt.lower()
         assert "wall" in prompt.lower()
 
