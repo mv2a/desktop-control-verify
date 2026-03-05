@@ -19,7 +19,10 @@ from mozaik_automation.verification.build_steps import (
     format_step_event,
     STEP_CREATE_JOB,
     STEP_DRAW_WALLS,
-    STEP_PLACE_CABINET,
+    STEP_APPLIANCES,
+    STEP_BASE_CABS,
+    STEP_WALL_CABS,
+    STEP_TALL_CABS,
     STEP_SWITCH_3D,
     STEP_FINAL,
 )
@@ -34,11 +37,11 @@ class TestStepEventParsing:
         assert step.screenshot_path == "data/copilot/pending/abc/step_walls.png"
         assert step.description == "Walls drawn (94\" back wall)"
 
-    def test_parse_cabinet_step(self):
-        line = "[STEP] place_cabinet|data/copilot/pending/abc/step_cab_1.png|Placed base #1: 2 Door 36\""
+    def test_parse_base_cabinet_step(self):
+        line = "[STEP] base_cabinets_placed|data/copilot/pending/abc/step_cab_1.png|Base cabinets placed: 3/3 OK"
         step = parse_step_event(line)
-        assert step.name == "place_cabinet"
-        assert "2 Door" in step.description
+        assert step.name == "base_cabinets_placed"
+        assert "3/3" in step.description
 
     def test_parse_non_step_line_returns_none(self):
         assert parse_step_event("[Build] Starting...") is None
@@ -69,9 +72,23 @@ class TestBuildStepConstants:
     def test_step_names_are_strings(self):
         assert STEP_CREATE_JOB == "create_job"
         assert STEP_DRAW_WALLS == "draw_walls"
-        assert STEP_PLACE_CABINET == "place_cabinet"
+        assert STEP_APPLIANCES == "appliances_placed"
+        assert STEP_BASE_CABS == "base_cabinets_placed"
+        assert STEP_WALL_CABS == "wall_cabinets_placed"
+        assert STEP_TALL_CABS == "tall_cabinets_placed"
         assert STEP_SWITCH_3D == "switch_3d"
         assert STEP_FINAL == "final_3d"
+
+    def test_eight_strategic_checkpoints(self):
+        """Verify all 8 Phase 11 strategic checkpoints are defined."""
+        checkpoints = [
+            STEP_CREATE_JOB, STEP_DRAW_WALLS, STEP_APPLIANCES,
+            STEP_BASE_CABS, STEP_WALL_CABS, STEP_TALL_CABS,
+            STEP_SWITCH_3D, STEP_FINAL
+        ]
+        assert len(checkpoints) == 8
+        assert all(isinstance(c, str) for c in checkpoints)
+        assert len(set(checkpoints)) == 8  # All unique
 
 
 class TestBuildStepResult:
