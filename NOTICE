@@ -1,0 +1,16 @@
+Trademarks
+
+Mozaik is a trademark of its owner (Mozaik Software, a Cyncly company). This project is
+not affiliated with, sponsored by or endorsed by Mozaik Software or Cyncly. The name is
+used only to identify the application the software was built and measured against.
+
+Third-party material
+
+data/e2e_test/*.png are screenshots of the Mozaik Enterprise user interface. They were
+captured on the author's Windows development machine while an automated test drove the
+application, and were committed on 3 February 2026. The interface shown in them belongs
+to its owner. They document interoperability and are excluded from any licence this
+repository grants.
+
+The package does not bundle third-party code. Its dependencies are declared in
+pyproject.toml, installed from their own distributions and governed by their own licences.

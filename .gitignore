@@ -73,3 +73,10 @@ data/vision_actions/
 # Training data (too large for git, use Git LFS or external storage)
 data/training/*.jsonl
 data/eval/*.jsonl
+
+# Benchmark and experiment outputs
+runs/
+
+# Local environment files
+.env
+.env.*

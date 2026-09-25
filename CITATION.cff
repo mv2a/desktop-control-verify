@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using these metadata. It has not been
+  released yet; the release version, date, licence and DOI will be added at release.
+type: software
+title: "desktop-control-verify (working title): cached-element control of Windows desktop applications, drawing-to-specification extraction and code-enforced build verification"
+abstract: >-
+  General-purpose layers extracted, with their development history, from a private
+  system that automates design entry in a Windows cabinet-design application that has no
+  automation interface. The control layer discovers the application's UI Automation tree
+  once and then drives it through cached, window-relative element positions. The
+  verification layer compares a vision-model extraction of a drawing with independent
+  readings of the drawing and of the built result, and decides PASS or FAIL in code.
+  The underlying development took place privately between January and March 2026.
+authors:
+  - given-names: Tiago Miranda
+    name-particle: de
+    family-names: Leão
+keywords:
+  - UI automation
+  - legacy software
+  - Windows UI Automation
+  - vision-language models
+  - verification
+  - human-in-the-loop
+version: 0.1.0

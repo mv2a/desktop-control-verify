@@ -3,87 +3,52 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mozaik-automation"
+# Working name. The public name, and whether the import package is renamed from
+# `mozaik_automation`, are undecided; see README.md.
+name = "desktop-control-verify"
 version = "0.1.0"
-description = "AI-powered companion tool for Mozaik cabinet design software"
+description = "Cached-element control of Windows desktop applications, drawing-to-specification extraction, and code-enforced verification of the result."
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "Proprietary"}
-authors = [
-    {name = "Your Name", email = "you@example.com"}
-]
-keywords = ["cabinet", "design", "automation", "vision", "llm", "dxf", "mozaik"]
+# No licence has been granted yet. LICENSE says so; this changes when one is chosen.
+license = {text = "UNLICENSED - no licence granted yet; see LICENSE"}
+authors = [{name = "Tiago Miranda de Leão"}]
+keywords = ["ui-automation", "win32", "ui-automation-tree", "legacy-software", "vision-language-models", "verification", "human-in-the-loop"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    # PyPI refuses any upload carrying a "Private ::" classifier. Remove at release.
+    "Private :: Do Not Upload",
 ]
-
 dependencies = [
-    # Vision & ML
-    "torch>=2.0.0",
-    "torchvision>=0.15.0",
-    "transformers>=4.35.0",
-    "pillow>=10.0.0",
-    "pdf2image>=1.16.0",
-    "opencv-python>=4.8.0",
-
-    # LLM
-    "openai>=1.0.0",
-    "anthropic>=0.18.0",
-    "llama-cpp-python>=0.2.0",
-
-    # DXF Generation
-    "ezdxf>=1.1.0",
-
-    # UI Automation (Windows)
-    "pywinauto>=0.6.8; sys_platform == 'win32'",
-    "pyautogui>=0.9.54",
-
-    # Data & Validation
     "pydantic>=2.0.0",
-    "jsonschema>=4.0.0",
-
-    # API
-    "fastapi>=0.100.0",
-    "uvicorn>=0.23.0",
-    "httpx>=0.25.0",
-
-    # Database
-    "sqlalchemy>=2.0.0",
-
-    # Utilities
-    "pyyaml>=6.0",
-    "rich>=13.0.0",
-    "typer>=0.9.0",
+    "pillow>=10.0.0",
 ]
 
 [project.optional-dependencies]
+# Vision backends for drawing extraction.
+vision = [
+    "anthropic>=0.18.0",
+    "openai>=1.0.0",
+    "httpx>=0.25.0",
+    "pdf2image>=1.16.0",
+]
+# The control layer and discovery scripts run on Windows only.
+windows = [
+    "pywinauto>=0.6.8; sys_platform == 'win32'",
+    "pywin32>=306; sys_platform == 'win32'",
+    "comtypes>=1.2.0; sys_platform == 'win32'",
+]
 dev = [
     "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-cov>=4.0.0",
-    "black>=23.0.0",
-    "ruff>=0.1.0",
-    "mypy>=1.0.0",
+    "rich>=13.0.0",
 ]
-training = [
-    "datasets>=2.14.0",
-    "accelerate>=0.24.0",
-    "peft>=0.6.0",
-    "bitsandbytes>=0.41.0",
-    "wandb>=0.15.0",
-]
-
-[project.scripts]
-mozaik-ai = "mozaik_automation.cli:main"
-
-[project.urls]
-Homepage = "https://github.com/yourorg/mozaik-automation"
-Documentation = "https://github.com/yourorg/mozaik-automation#readme"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -91,22 +56,9 @@ where = ["src"]
 [tool.setuptools.package-dir]
 "" = "src"
 
-[tool.black]
-line-length = 100
-target-version = ['py310', 'py311', 'py312']
-
 [tool.ruff]
 line-length = 100
-select = ["E", "F", "I", "N", "W", "UP"]
-
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-asyncio_mode = "auto"
-env = [
-    "MOZAIK_MOCK_VISION=1",
-]
+pythonpath = ["src"]
