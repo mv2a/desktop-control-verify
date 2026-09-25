@@ -27,8 +27,12 @@ WM_GETTEXT = 0x000D
 WM_GETTEXTLENGTH = 0x000E
 BM_CLICK = 0x00F5
 
-user32 = ctypes.windll.user32
-kernel32 = ctypes.windll.kernel32
+# ctypes.windll exists only on Windows. Resolve it softly so the module (and the
+# ElementCache in it) can be imported and tested on any OS; the Win32 calls below
+# still require Windows at run time.
+_windll = getattr(ctypes, "windll", None)
+user32 = _windll.user32 if _windll else None
+kernel32 = _windll.kernel32 if _windll else None
 
 
 @dataclass
@@ -137,9 +141,24 @@ class FastMozaikDriver:
         "3DButton": {"rect": (845, 258, 865, 278), "tab": "*"},
     }
 
-    def __init__(self, cache_file: str = None):
+    def __init__(
+        self,
+        cache_file: str = None,
+        window_title: str = "Mozaik",
+        default_elements: Optional[Dict[str, dict]] = None,
+    ):
+        """Create a driver for the first visible window whose title contains `window_title`.
+
+        The defaults reproduce the original Mozaik V14 configuration. For any other
+        application pass its title substring, and either a `default_elements` map of
+        fallback positions or an empty dict to rely on the cache alone.
+        """
         self.hwnd = None
         self.pid = None
+        self.window_title = window_title
+        self.default_elements = (
+            self.DEFAULT_ELEMENTS if default_elements is None else default_elements
+        )
         self.cache = ElementCache(cache_file) if cache_file else ElementCache()
         self._app = None  # pywinauto app for fallback
 
@@ -157,14 +176,14 @@ class FastMozaikDriver:
             def find_mozaik(hwnd, _):
                 if win32gui.IsWindowVisible(hwnd):
                     title = win32gui.GetWindowText(hwnd)
-                    if "Mozaik" in title:
+                    if self.window_title in title:
                         results.append((hwnd, title))
                 return True
 
             win32gui.EnumWindows(find_mozaik, None)
 
             if not results:
-                print("Mozaik window not found")
+                print(f"No visible window with {self.window_title!r} in its title")
                 return False
 
             self.hwnd, title = results[0]
@@ -194,8 +213,8 @@ class FastMozaikDriver:
             return (center[0] + wx, center[1] + wy)
 
         # Try default positions
-        if automation_id in self.DEFAULT_ELEMENTS:
-            elem = self.DEFAULT_ELEMENTS[automation_id]
+        if automation_id in self.default_elements:
+            elem = self.default_elements[automation_id]
             l, t, r, b = elem["rect"]
             cx, cy = (l + r) // 2, (t + b) // 2
             wx, wy = self.cache.window_rect[0], self.cache.window_rect[1]
@@ -354,6 +373,10 @@ class FastMozaikDriver:
         except Exception as e:
             print(f"Screenshot failed: {e}")
             return None
+
+
+# Application-neutral name for the same driver.
+CachedWin32Driver = FastMozaikDriver
 
 
 # Convenience function for quick testing

@@ -1,11 +1,16 @@
 """
-Mozaik Automation - AI-powered cabinet design assistant.
+General-purpose layers extracted from the Mozaik automation project.
 
-This package provides tools for:
-- Extracting room and cabinet specifications from drawings using vision models
-- Generating DXF files for Mozaik import
-- Creating operator checklists and automation scripts
-- UI automation for Mozaik software
+This package provides:
+- A Win32 control layer: a cached-element driver for Windows desktop applications
+  (`mozaik_automation.automation`)
+- Drawing-to-specification extraction with vision models (`mozaik_automation.vision`)
+  against a typed specification schema (`mozaik_automation.models`)
+- Deterministic, code-enforced verification of a build against its specification
+  (`mozaik_automation.verification`)
+
+The cabinetry product built on these layers (DXF output, checklists, finish engine,
+the build pipeline, element caches and trained models) is not part of this package.
 """
 
 __version__ = "0.1.0"
@@ -24,9 +29,6 @@ def __getattr__(name):
     if name == "Appliance":
         from mozaik_automation.models import Appliance
         return Appliance
-    if name == "CabinetVisionPipeline":
-        from mozaik_automation.pipeline import CabinetVisionPipeline
-        return CabinetVisionPipeline
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = [
@@ -34,5 +36,4 @@ __all__ = [
     "Room",
     "Cabinet",
     "Appliance",
-    "CabinetVisionPipeline",
 ]
