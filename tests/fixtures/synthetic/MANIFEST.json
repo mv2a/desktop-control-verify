@@ -1,0 +1,15 @@
+{
+  "cases": 3,
+  "files": {
+    "synthetic_000.json": "4a204b47ecee6dc9ef4ad31aa9c1c60c0065c17f55556741f717ebf922e09ad0",
+    "synthetic_000.png": "57f1dfe2c724421d7146e906af8a3fabd1173d0d490f17d0752b3a2fcbfa02ee",
+    "synthetic_001.json": "fdb20a3828787b83dd11fd6a69dbeb9eb7293cd9c2d28673a629afd7fe6095f7",
+    "synthetic_001.png": "a2f8519e0af2859fd0492bd70a3be960e795695a493f83d3e69452991346bba0",
+    "synthetic_002.json": "a2fda376d288262a2951d16809ddb20da83ef379ea7cabc59f11f564b7dfec16",
+    "synthetic_002.png": "dbaa82124307ad64b94cc8d5eaed7477e14bf6daa24b1d0a5ab9e4c6fdf3599a"
+  },
+  "generator": "benchmarks/synthetic.py",
+  "generator_version": "1",
+  "pillow_version": "11.1.0",
+  "seed": 20260925
+}

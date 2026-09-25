@@ -1,0 +1,821 @@
+{
+  "analysis": {
+    "appliances": [
+      {
+        "sink_bowls": null,
+        "type": "refrigerator"
+      },
+      {
+        "sink_bowls": 1,
+        "type": "sink"
+      },
+      {
+        "sink_bowls": null,
+        "type": "range"
+      },
+      {
+        "sink_bowls": null,
+        "type": "hood"
+      }
+    ],
+    "base_cabinets": [
+      {
+        "doors": 2,
+        "drawers": 0,
+        "has_sink": true,
+        "position": "leftmost",
+        "sink_bowls": 1
+      },
+      {
+        "doors": 1,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 0,
+        "drawers": 3,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 1,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 2,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 2,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 0,
+        "drawers": 4,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 0,
+        "drawers": 3,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 2,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 0,
+        "drawers": 4,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 1,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 0,
+        "drawers": 4,
+        "has_sink": false,
+        "position": "center",
+        "sink_bowls": null
+      },
+      {
+        "doors": 2,
+        "drawers": 1,
+        "has_sink": false,
+        "position": "rightmost",
+        "sink_bowls": null
+      }
+    ],
+    "layout_shape": "U-shape",
+    "tall_cabinets": [],
+    "wall_cabinets": [
+      {
+        "doors": 2,
+        "position": "leftmost"
+      },
+      {
+        "doors": 1,
+        "position": "center"
+      },
+      {
+        "doors": 2,
+        "position": "center"
+      },
+      {
+        "doors": 1,
+        "position": "center"
+      },
+      {
+        "doors": 1,
+        "position": "center"
+      },
+      {
+        "doors": 2,
+        "position": "center"
+      },
+      {
+        "doors": 1,
+        "position": "center"
+      },
+      {
+        "doors": 1,
+        "position": "rightmost"
+      }
+    ]
+  },
+  "extraction": {
+    "appliances": [
+      {
+        "type": "refrigerator"
+      },
+      {
+        "note": "single bowl",
+        "type": "sink"
+      },
+      {
+        "type": "range"
+      },
+      {
+        "type": "hood"
+      }
+    ],
+    "cabinets": [
+      {
+        "note": "sink base 2 door",
+        "type": "base",
+        "wall": "left"
+      },
+      {
+        "note": "1 door 1 drawer",
+        "type": "base",
+        "wall": "left"
+      },
+      {
+        "note": "3 drawer",
+        "type": "base",
+        "wall": "left"
+      },
+      {
+        "note": "1 door 1 drawer",
+        "type": "base",
+        "wall": "back"
+      },
+      {
+        "note": "2 door 1 drawer",
+        "type": "base",
+        "wall": "back"
+      },
+      {
+        "note": "2 door 1 drawer",
+        "type": "base",
+        "wall": "back"
+      },
+      {
+        "note": "4 drawer",
+        "type": "base",
+        "wall": "back"
+      },
+      {
+        "note": "3 drawer",
+        "type": "base",
+        "wall": "right"
+      },
+      {
+        "note": "2 door 1 drawer",
+        "type": "base",
+        "wall": "right"
+      },
+      {
+        "note": "4 drawer",
+        "type": "base",
+        "wall": "right"
+      },
+      {
+        "note": "1 door 1 drawer",
+        "type": "base",
+        "wall": "right"
+      },
+      {
+        "note": "4 drawer",
+        "type": "base",
+        "wall": "right"
+      },
+      {
+        "note": "2 door 1 drawer",
+        "type": "base",
+        "wall": "right"
+      },
+      {
+        "note": "2 door",
+        "type": "wall",
+        "wall": "left"
+      },
+      {
+        "note": "1 door",
+        "type": "wall",
+        "wall": "left"
+      },
+      {
+        "note": "2 door",
+        "type": "wall",
+        "wall": "back"
+      },
+      {
+        "note": "1 door",
+        "type": "wall",
+        "wall": "back"
+      },
+      {
+        "note": "1 door",
+        "type": "wall",
+        "wall": "back"
+      },
+      {
+        "note": "2 door",
+        "type": "wall",
+        "wall": "right"
+      },
+      {
+        "note": "1 door",
+        "type": "wall",
+        "wall": "right"
+      },
+      {
+        "note": "1 door",
+        "type": "wall",
+        "wall": "right"
+      }
+    ],
+    "parsed": {
+      "base": 13,
+      "tall": 0,
+      "wall": 8
+    },
+    "room": {
+      "shape": "U-shape",
+      "walls": [
+        {
+          "length": 132,
+          "name": "left"
+        },
+        {
+          "length": 168,
+          "name": "back"
+        },
+        {
+          "length": 144,
+          "name": "right"
+        }
+      ]
+    }
+  },
+  "extraction_notes": {
+    "hood": null,
+    "range": null,
+    "refrigerator": null,
+    "sink": "single bowl"
+  },
+  "id": "synthetic_001",
+  "spec": {
+    "appliances": [
+      {
+        "appliance_type": "refrigerator",
+        "dimensions": {
+          "width": 36
+        },
+        "id": "A1",
+        "position": {
+          "elevation": 0,
+          "offset": 0.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "appliance_type": "sink",
+        "dimensions": {
+          "width": 30
+        },
+        "id": "A2",
+        "position": {
+          "elevation": 0,
+          "offset": 39.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "appliance_type": "dishwasher",
+        "dimensions": {
+          "width": 24
+        },
+        "id": "A3",
+        "position": {
+          "elevation": 0,
+          "offset": 72.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "appliance_type": "range",
+        "dimensions": {
+          "width": 30
+        },
+        "id": "A4",
+        "position": {
+          "elevation": 0,
+          "offset": 24.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "appliance_type": "hood",
+        "dimensions": {
+          "width": 30
+        },
+        "id": "A5",
+        "position": {
+          "elevation": 0,
+          "offset": 24.0,
+          "wall_id": "back"
+        }
+      }
+    ],
+    "cabinets": [
+      {
+        "cabinet_type": "base_sink",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 36
+        },
+        "id": "B1",
+        "notes": "sink base 2 door, single bowl",
+        "position": {
+          "elevation": 0,
+          "offset": 36.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 18
+        },
+        "id": "B2",
+        "notes": "1 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 96.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "cabinet_type": "drawer_base",
+        "configuration": {
+          "door_count": 0,
+          "drawer_count": 3
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 12
+        },
+        "id": "B3",
+        "notes": "3 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 114.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 21
+        },
+        "id": "W4",
+        "notes": "2 door",
+        "position": {
+          "elevation": 54,
+          "offset": 36.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 24
+        },
+        "id": "W5",
+        "notes": "1 door",
+        "position": {
+          "elevation": 54,
+          "offset": 57.0,
+          "wall_id": "left"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 24
+        },
+        "id": "B6",
+        "notes": "1 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 54.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 33
+        },
+        "id": "B7",
+        "notes": "2 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 78.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 33
+        },
+        "id": "B8",
+        "notes": "2 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 111.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "drawer_base",
+        "configuration": {
+          "door_count": 0,
+          "drawer_count": 4
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 21
+        },
+        "id": "B9",
+        "notes": "4 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 144.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 27
+        },
+        "id": "W10",
+        "notes": "2 door",
+        "position": {
+          "elevation": 54,
+          "offset": 54.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 36
+        },
+        "id": "W11",
+        "notes": "1 door",
+        "position": {
+          "elevation": 54,
+          "offset": 81.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 36
+        },
+        "id": "W12",
+        "notes": "1 door",
+        "position": {
+          "elevation": 54,
+          "offset": 117.0,
+          "wall_id": "back"
+        }
+      },
+      {
+        "cabinet_type": "drawer_base",
+        "configuration": {
+          "door_count": 0,
+          "drawer_count": 3
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 24
+        },
+        "id": "B13",
+        "notes": "3 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 24.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 12
+        },
+        "id": "B14",
+        "notes": "2 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 48.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "drawer_base",
+        "configuration": {
+          "door_count": 0,
+          "drawer_count": 4
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 27
+        },
+        "id": "B15",
+        "notes": "4 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 60.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 12
+        },
+        "id": "B16",
+        "notes": "1 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 87.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "drawer_base",
+        "configuration": {
+          "door_count": 0,
+          "drawer_count": 4
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 21
+        },
+        "id": "B17",
+        "notes": "4 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 99.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "base",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 1
+        },
+        "dimensions": {
+          "depth": 24,
+          "height": 34.5,
+          "width": 15
+        },
+        "id": "B18",
+        "notes": "2 door 1 drawer",
+        "position": {
+          "elevation": 0,
+          "offset": 120.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 2,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 18
+        },
+        "id": "W19",
+        "notes": "2 door",
+        "position": {
+          "elevation": 54,
+          "offset": 24.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 36
+        },
+        "id": "W20",
+        "notes": "1 door",
+        "position": {
+          "elevation": 54,
+          "offset": 42.0,
+          "wall_id": "right"
+        }
+      },
+      {
+        "cabinet_type": "wall",
+        "configuration": {
+          "door_count": 1,
+          "drawer_count": 0
+        },
+        "dimensions": {
+          "depth": 12,
+          "height": 30,
+          "width": 30
+        },
+        "id": "W21",
+        "notes": "1 door",
+        "position": {
+          "elevation": 54,
+          "offset": 78.0,
+          "wall_id": "right"
+        }
+      }
+    ],
+    "metadata": {
+      "client_name": null,
+      "created_at": "2026-09-25T00:00:00",
+      "job_name": "Synthetic case 001",
+      "notes": "Generated by benchmarks/synthetic.py v1; not derived from any drawing.",
+      "source_file": "synthetic_001.png",
+      "source_type": "floor_plan"
+    },
+    "room": {
+      "ceiling_height": 96,
+      "name": "Kitchen",
+      "openings": [],
+      "units": "in",
+      "walls": [
+        {
+          "end": [
+            0,
+            0
+          ],
+          "id": "left",
+          "start": [
+            0,
+            132
+          ],
+          "thickness": 4.5
+        },
+        {
+          "end": [
+            168,
+            0
+          ],
+          "id": "back",
+          "start": [
+            0,
+            0
+          ],
+          "thickness": 4.5
+        },
+        {
+          "end": [
+            168,
+            144
+          ],
+          "id": "right",
+          "start": [
+            168,
+            0
+          ],
+          "thickness": 4.5
+        }
+      ]
+    }
+  }
+}
