@@ -16,12 +16,19 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 
-# Step name constants
+# Step name constants: the eight strategic checkpoints of the Phase 11 protocol.
 STEP_CREATE_JOB = "create_job"
 STEP_DRAW_WALLS = "draw_walls"
-STEP_PLACE_CABINET = "place_cabinet"
+STEP_APPLIANCES = "appliances_placed"
+STEP_BASE_CABS = "base_cabinets_placed"
+STEP_WALL_CABS = "wall_cabinets_placed"
+STEP_TALL_CABS = "tall_cabinets_placed"
 STEP_SWITCH_3D = "switch_3d"
 STEP_FINAL = "final_3d"
+
+# Single per-cabinet step name from the original five-step protocol. Kept so that
+# callers written against it keep working; it is not one of the eight checkpoints.
+STEP_PLACE_CABINET = "place_cabinet"
 
 
 @dataclass
