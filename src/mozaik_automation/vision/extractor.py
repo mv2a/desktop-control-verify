@@ -7,6 +7,7 @@ from various input formats (PDF, images, sketches) using multimodal vision model
 
 import base64
 import json
+import os
 from pathlib import Path
 from typing import Any, Literal, Optional
 
@@ -36,7 +37,7 @@ class DrawingExtractor:
         self.backend = backend
         self.model = model or self._default_model()
         self.api_key = api_key
-        self.ollama_host = ollama_host or "http://14coresbeast:11434"
+        self.ollama_host = ollama_host or os.environ.get("OLLAMA_HOST", "http://localhost:11434")
         self._client = None
 
     def _default_model(self) -> str:
