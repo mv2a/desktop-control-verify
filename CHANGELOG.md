@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.1: 28 September 2026
 
 ### Fixed
 - `PhaseRunner` in `scripts/overnight_discovery.py` times phases with `time.perf_counter()`

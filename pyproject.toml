@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "desktop-control-verify"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cached-element control of Windows desktop applications, drawing-to-specification extraction, and code-enforced verification of the result."
 readme = "README.md"
 requires-python = ">=3.10"

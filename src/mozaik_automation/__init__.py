@@ -13,7 +13,7 @@ The cabinetry product built on these layers (DXF output, checklists, finish engi
 the build pipeline, element caches and trained models) is not part of this package.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 # Lazy imports to avoid loading heavy dependencies for server-only use
 def __getattr__(name):
