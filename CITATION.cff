@@ -1,9 +1,7 @@
 cff-version: 1.2.0
-message: >-
-  If you use this software, please cite it using these metadata. It has not been
-  released yet; the release version, date, licence and DOI will be added at release.
+message: If you use this software, please cite it using these metadata.
 type: software
-title: "desktop-control-verify (working title): cached-element control of Windows desktop applications, drawing-to-specification extraction and code-enforced build verification"
+title: "desktop-control-verify: cached-element control of Windows desktop applications, drawing-to-specification extraction and code-enforced build verification"
 abstract: >-
   General-purpose layers extracted, with their development history, from a private
   system that automates design entry in a Windows cabinet-design application that has no
@@ -24,3 +22,6 @@ keywords:
   - verification
   - human-in-the-loop
 version: 0.1.0
+date-released: 2026-09-28
+license: Apache-2.0
+repository-code: https://github.com/mv2a/desktop-control-verify

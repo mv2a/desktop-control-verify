@@ -1,17 +1,15 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-# Working name. The public name, and whether the import package is renamed from
-# `mozaik_automation`, are undecided; see README.md.
 name = "desktop-control-verify"
 version = "0.1.0"
 description = "Cached-element control of Windows desktop applications, drawing-to-specification extraction, and code-enforced verification of the result."
 readme = "README.md"
 requires-python = ">=3.10"
-# No licence has been granted yet. LICENSE says so; this changes when one is chosen.
-license = {text = "UNLICENSED - no licence granted yet; see LICENSE"}
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 authors = [{name = "Tiago Miranda de Leão"}]
 keywords = ["ui-automation", "win32", "ui-automation-tree", "legacy-software", "vision-language-models", "verification", "human-in-the-loop"]
 classifiers = [
@@ -23,7 +21,8 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    # PyPI refuses any upload carrying a "Private ::" classifier. Remove at release.
+    # Not published to PyPI. PyPI refuses any upload carrying a "Private ::" classifier;
+    # remove this line only if a PyPI release is decided.
     "Private :: Do Not Upload",
 ]
 dependencies = [

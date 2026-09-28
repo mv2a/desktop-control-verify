@@ -3,8 +3,8 @@
 ## Summary
 
 This repository is a history-preserving extraction from a private repository, made on
-25 September 2026. It has not been publicly released. The table below separates the
-dates that matter.
+25 September 2026, and first released publicly on 28 September 2026. The table below
+separates the dates that matter.
 
 | Event | Date | Evidence |
 |---|---|---|
@@ -12,7 +12,8 @@ dates that matter.
 | Last historical change to an extracted file | 2026-03-05 17:31:41 −05:00 | commit `eafb42d` here |
 | Last commit of the private project | 2026-09-08 | private repository |
 | Extraction | 2026-09-25 | this document; commits after `eafb42d` |
-| First public release | not yet | will be recorded here, in CHANGELOG.md and in CITATION.cff |
+| GitHub repository created (private) | 2026-09-25 | GitHub |
+| First public release | 2026-09-28 | v0.1.0; CHANGELOG.md; CITATION.cff |
 
 ## Method
 

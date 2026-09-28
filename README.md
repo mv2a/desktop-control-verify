@@ -1,4 +1,4 @@
-# desktop-control-verify (working name)
+# desktop-control-verify
 
 Tools for driving a Windows desktop application that has no automation interface, for
 turning a drawing into a typed specification with a vision model, and for checking in
@@ -9,10 +9,10 @@ entry in Mozaik Enterprise, a Windows design-to-manufacturing application. They 
 extracted from that project with their development history. The cabinetry product built
 on top of them is not included.
 
-> **Status: pre-release research software. No licence has been granted yet** (see
-> [LICENSE](LICENSE)). The public name, the licence and the release date are still to be
-> decided. Mozaik is a trademark of its owner. This project is not affiliated with or
-> endorsed by Mozaik Software or Cyncly (see [NOTICE](NOTICE)).
+> **Status: research software, version 0.1.0, first released publicly on 28 September 2026
+> under the [Apache License 2.0](LICENSE).** Mozaik is a trademark of its owner. This project
+> is not affiliated with or endorsed by Mozaik Software or Cyncly. The Mozaik screenshots in
+> `data/e2e_test/` are not covered by the licence (see [NOTICE](NOTICE)).
 
 ## What is here
 
@@ -121,10 +121,11 @@ authors, messages and co-author trailers unchanged.
 | Development of the extracted files, in private | **25 January 2026 to 5 March 2026** (26 commits) |
 | Development of the wider private project | 25 January 2026 to 8 September 2026 |
 | Extraction and preparation for release | from 25 September 2026 (commits after `eafb42d`) |
-| First public release | **not yet released** |
+| GitHub repository created (private) | 25 September 2026 |
+| First public release | **28 September 2026** (v0.1.0) |
 
 The historical commits record when the work was done in private. They do not record when
-it became public, which is the release date above once it exists. The extraction rewrote
+it became public, which is the release date above. The extraction rewrote
 commit identifiers, because git derives them from content. The mapping from each commit
 here to its original, a verified archive of the original repository, and the hosting
 provider's server-side push log for it are all held privately and can be produced for
@@ -191,7 +192,7 @@ about what is built, tested and claimed.
 - **The history is sparse.** Most of the extracted code arrived in a few large commits.
   How the excluded parts evolved is not visible here.
 - **Names.** The import package keeps the original project's name, `mozaik_automation`,
-  so that its history reads continuously. It may be renamed before release.
+  so that its history reads continuously.
 
 ## Citing
 

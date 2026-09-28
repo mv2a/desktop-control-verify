@@ -1,7 +1,7 @@
 {
-  "title": "desktop-control-verify (working title): cached-element control of Windows desktop applications, drawing-to-specification extraction and code-enforced build verification",
+  "title": "desktop-control-verify: cached-element control of Windows desktop applications, drawing-to-specification extraction and code-enforced build verification",
   "upload_type": "software",
-  "description": "<p>General-purpose layers extracted, with their development history, from a private system that automates design entry in a Windows cabinet-design application that has no automation interface. The control layer discovers the application's UI Automation tree once and then drives it through cached, window-relative element positions. The verification layer compares a vision-model extraction of a drawing with independent readings of the drawing and of the built result, and decides PASS or FAIL in code.</p><p>Underlying development took place privately between 25 January and 5 March 2026. The repository was extracted on 25 September 2026. The public release date is the date of this record. Development was AI-assisted; see the README's AI-assistance section.</p>",
+  "description": "<p>General-purpose layers extracted, with their development history, from a private system that automates design entry in a Windows cabinet-design application that has no automation interface. The control layer discovers the application's UI Automation tree once and then drives it through cached, window-relative element positions. The verification layer compares a vision-model extraction of a drawing with independent readings of the drawing and of the built result, and decides PASS or FAIL in code.</p><p>Underlying development took place privately between 25 January and 5 March 2026. The repository was extracted on 25 September 2026 and first released publicly on 28 September 2026. Development was AI-assisted; see the README's AI-assistance section.</p>",
   "creators": [
     {
       "name": "Leão, Tiago Miranda de"
@@ -16,5 +16,5 @@
     "human-in-the-loop"
   ],
   "language": "eng",
-  "notes": "Pre-release metadata. Before the first release, add the licence identifier, and an ORCID for the creator if one exists."
+  "license": "Apache-2.0"
 }

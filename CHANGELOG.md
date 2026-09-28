@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased: extraction, 25 September 2026
+## 0.1.0: first public release, 28 September 2026
+
+Licensed under the Apache License 2.0. Extracted on 25 September 2026.
 
 The history up to commit `eafb42d` (5 March 2026) is the historical record of the
 extracted files. See [docs/PROVENANCE.md](docs/PROVENANCE.md). Everything below was done
