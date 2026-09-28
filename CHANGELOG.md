@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- `PhaseRunner` in `scripts/overnight_discovery.py` times phases with `time.perf_counter()`
+  instead of the wall clock. On Windows the wall clock ticks about every 15 ms, so a fast
+  phase could measure 0 seconds, and `test_successful_phase` failed intermittently on the
+  Windows and Python 3.10 CI job for the 0.1.0 commit. The wall clock can also jump when
+  the system time is adjusted.
+
 ## 0.1.0: first public release, 28 September 2026
 
 Licensed under the Apache License 2.0. Extracted on 25 September 2026.

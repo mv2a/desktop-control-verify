@@ -275,7 +275,7 @@ class PhaseRunner:
             f"=== Phase {self.phase_num}: {self.phase_name} "
             f"(budget: {self.budget_s}s) ==="
         )
-        start = time.time()
+        start = time.perf_counter()  # monotonic, high resolution
 
         def _target():
             try:
@@ -287,7 +287,7 @@ class PhaseRunner:
         t = threading.Thread(target=_target, daemon=True)
         t.start()
         t.join(timeout=self.budget_s)
-        self.elapsed = time.time() - start
+        self.elapsed = time.perf_counter() - start
 
         if t.is_alive():
             self.logger.warning(
