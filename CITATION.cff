@@ -11,9 +11,8 @@ abstract: >-
   readings of the drawing and of the built result, and decides PASS or FAIL in code.
   The underlying development took place privately between January and March 2026.
 authors:
-  - given-names: Tiago Miranda
-    name-particle: de
-    family-names: Leão
+  - given-names: Tiago
+    family-names: Miranda de Leão
 keywords:
   - UI automation
   - legacy software
