@@ -4,7 +4,8 @@
   "description": "<p>General-purpose layers extracted, with their development history, from a private system that automates design entry in a Windows cabinet-design application that has no automation interface. The control layer discovers the application's UI Automation tree once and then drives it through cached, window-relative element positions. The verification layer compares a vision-model extraction of a drawing with independent readings of the drawing and of the built result, and decides PASS or FAIL in code.</p><p>Underlying development took place privately between 25 January and 5 March 2026. The repository was extracted on 25 September 2026 and first released publicly on 28 September 2026. Development was AI-assisted; see the README's AI-assistance section.</p>",
   "creators": [
     {
-      "name": "Miranda de Leao, Tiago"
+      "name": "Miranda de Leao, Tiago",
+      "orcid": "0009-0003-6386-5941"
     }
   ],
   "keywords": [

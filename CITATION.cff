@@ -13,6 +13,7 @@ abstract: >-
 authors:
   - given-names: Tiago
     family-names: Miranda de Leao
+    orcid: "https://orcid.org/0009-0003-6386-5941"
 keywords:
   - UI automation
   - legacy software
