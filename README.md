@@ -196,4 +196,4 @@ about what is built, tested and claimed.
 
 ## Citing
 
-See [CITATION.cff](CITATION.cff). The software has no DOI yet.
+See [CITATION.cff](CITATION.cff). The software is archived on Zenodo: [10.5281/zenodo.23029795](https://doi.org/10.5281/zenodo.23029795) covers all versions, and v0.1.2 is [10.5281/zenodo.23029796](https://doi.org/10.5281/zenodo.23029796).
