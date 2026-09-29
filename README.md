@@ -9,7 +9,7 @@ entry in Mozaik Enterprise, a Windows design-to-manufacturing application. They 
 extracted from that project with their development history. The cabinetry product built
 on top of them is not included.
 
-> **Status: research software, version 0.1.1, under the [Apache License 2.0](LICENSE). First
+> **Status: research software, version 0.1.2, under the [Apache License 2.0](LICENSE). First
 > released publicly as 0.1.0 on 28 September 2026.** Mozaik is a trademark of its owner. This project
 > is not affiliated with or endorsed by Mozaik Software or Cyncly. The Mozaik screenshots in
 > `data/e2e_test/` are not covered by the licence (see [NOTICE](NOTICE)).
